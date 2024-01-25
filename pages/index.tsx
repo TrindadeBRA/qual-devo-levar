@@ -1,118 +1,178 @@
-import Image from "next/image";
-import { Inter } from "next/font/google";
+import { useState } from 'react';
 
-const inter = Inter({ subsets: ["latin"] });
+const Home: React.FC = () => {
+  const [product1, setProduct1] = useState({
+    sizeOrWeight: 0,
+    unit: 'grama',
+    price: 0,
+    name: 'Produto 01',
+  });
 
-export default function Home() {
+  const [product2, setProduct2] = useState({
+    sizeOrWeight: 0,
+    unit: 'grama',
+    price: 0,
+    name: 'Produto 02',
+  });
+
+  const [comparisonResult, setComparisonResult] = useState<string | null>(null);
+  const [costPerUnit1, setCostPerUnit1] = useState<number | null>(null);
+  const [costPerUnit2, setCostPerUnit2] = useState<number | null>(null);
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Conversão para a unidade padrão (grama ou litro)
+    const convertedSizeOrWeight1 = convertToStandardUnit(product1);
+    const convertedSizeOrWeight2 = convertToStandardUnit(product2);
+
+    // Cálculo do preço por unidade
+    const pricePerUnit1 = product1.price / convertedSizeOrWeight1;
+    const pricePerUnit2 = product2.price / convertedSizeOrWeight2;
+
+    // Comparativo de preços Logs
+    if (pricePerUnit1 < pricePerUnit2) {
+      console.log(`${product1.unit} de ${product1.name} é mais barato por unidade.`);
+    } else if (pricePerUnit1 > pricePerUnit2) {
+      console.log(`${product2.unit} de ${product2.name} é mais barato por unidade.`);
+    } else {
+      console.log('Ambos os produtos têm o mesmo preço por unidade.');
+    }
+
+    // Comparativo de preços
+    if (pricePerUnit1 < pricePerUnit2) {
+      setComparisonResult(`${product1.unit} de ${product1.name} é mais barato por unidade.`);
+    } else if (pricePerUnit1 > pricePerUnit2) {
+      setComparisonResult(`${product2.unit} de ${product2.name} é mais barato por unidade.`);
+    } else {
+      setComparisonResult('Ambos os produtos têm o mesmo preço por unidade.');
+    }
+
+    // Logs de custo por unidade
+    console.log(`Custo por unidade de ${product1.name}: R$${pricePerUnit1.toFixed(3)}`);
+    console.log(`Custo por unidade de ${product2.name}: R$${pricePerUnit2.toFixed(3)}`);
+
+    // Atualizando informações de custo por unidade
+    setCostPerUnit1(pricePerUnit1);
+    setCostPerUnit2(pricePerUnit2);
+  };
+
+  const convertToStandardUnit = (product: any): number => {
+    // Converte para a unidade padrão (grama ou litro)
+    let convertedSizeOrWeight = product.sizeOrWeight;
+
+    if (product.unit === 'quilo') {
+      convertedSizeOrWeight *= 1000; // Converte para gramas
+    } else if (product.unit === 'litro') {
+      convertedSizeOrWeight *= 1000; // Converte para mililitros
+    }
+
+    return convertedSizeOrWeight;
+  };
+
+  const handleUnitChange = (unit: string) => {
+    setProduct1({ ...product1, unit });
+    setProduct2({ ...product2, unit });
+  };
+
   return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
-    >
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">pages/index.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
+    <div className="container mx-auto mt-8 p-4 bg-gray-100 text-black rounded-lg shadow-md">
+      <h1 className="text-2xl font-bold mb-6 text-center">Qual Devo Levar?</h1>
+      <form onSubmit={handleFormSubmit} className="flex flex-col gap-4">
+        
+        <div className="flex flex-col">
+          <label className="text-lg font-semibold mb-2">Produto 1</label>
+          <div className="flex gap-4">
+            <select
+              value={product1.unit}
+              onChange={(e) => handleUnitChange(e.target.value)}
+              className="p-2 border rounded-md focus:outline-none focus:border-blue-500"
+            >
+              <option value="grama">g</option>
+              <option value="quilo">kg</option>
+              <option value="mililitro">ml</option>
+              <option value="litro">L</option>
+            </select>
+            <input
+              type="number"
+              placeholder="Tamanho/Peso"
+              value={product1.sizeOrWeight}
+              onChange={(e) => setProduct1({ ...product1, sizeOrWeight: parseFloat(e.target.value) })}
+              className="p-2 border rounded-md focus:outline-none focus:border-blue-500"
             />
-          </a>
+            <div className="relative">
+              <span className="absolute inset-y-0 left-0 pl-2 flex items-center text-gray-700">
+                R$
+              </span>
+              <input
+                type="number"
+                placeholder="Preço"
+                value={product1.price}
+                onChange={(e) => setProduct1({ ...product1, price: parseFloat(e.target.value) })}
+                className="pl-7 p-2 border rounded-md focus:outline-none focus:border-blue-500"
+              />
+            </div>
+          </div>
         </div>
-      </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
+        <div className="flex flex-col">
+          <label className="text-lg font-semibold mb-2">Produto 2</label>
+          <div className="flex gap-4">
+            <select
+              value={product2.unit}
+              onChange={(e) => handleUnitChange(e.target.value)}
+              className="p-2 border rounded-md focus:outline-none focus:border-blue-500"
+            >
+              <option value="grama">g</option>
+              <option value="quilo">kg</option>
+              <option value="mililitro">ml</option>
+              <option value="litro">L</option>
+            </select>
+            <input
+              type="number"
+              placeholder="Tamanho/Peso"
+              value={product2.sizeOrWeight}
+              onChange={(e) => setProduct2({ ...product2, sizeOrWeight: parseFloat(e.target.value) })}
+              className="p-2 border rounded-md focus:outline-none focus:border-blue-500"
+            />
+            <div className="relative">
+              <span className="absolute inset-y-0 left-0 pl-2 flex items-center text-gray-700">
+                R$
+              </span>
+              <input
+                type="number"
+                placeholder="Preço"
+                value={product2.price}
+                onChange={(e) => setProduct2({ ...product2, price: parseFloat(e.target.value) })}
+                className="pl-7 p-2 border rounded-md focus:outline-none focus:border-blue-500"
+              />
+            </div>
+          </div>
+        </div>
+        <button
+          type="submit"
+          className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
         >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+          Comparar Preços
+        </button>
+      </form>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+      {/* Resultado da comparação */}
+      {comparisonResult && (
+        <div className="mt-6 text-center text-green-600 font-semibold">
+          {comparisonResult}
+        </div>
+      )}
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Discover and deploy boilerplate example Next.js&nbsp;projects.
-          </p>
-        </a>
+      {/* Custo por unidade */}
+      {costPerUnit1 !== null && costPerUnit2 !== null && (
+        <div className="mt-4 text-center">
+          <p>{`Custo por unidade de ${product1.name}: R$${costPerUnit1.toFixed(3)}`}</p>
+          <p>{`Custo por unidade de ${product2.name}: R$${costPerUnit2.toFixed(3)}`}</p>
+        </div>
+      )}
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    </div>
   );
-}
+};
+
+export default Home;
