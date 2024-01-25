@@ -1,23 +1,23 @@
 import { useState } from 'react';
 
 const Home: React.FC = () => {
-  const [product1, setProduct1] = useState({
-    sizeOrWeight: 0,
+  const [product1, setProduct1]: any = useState({
+    sizeOrWeight: 0 ,
     unit: 'grama',
     price: 0,
     name: 'Produto 01',
   });
 
-  const [product2, setProduct2] = useState({
+  const [product2, setProduct2]: any = useState({
     sizeOrWeight: 0,
     unit: 'grama',
     price: 0,
     name: 'Produto 02',
   });
 
-  const [comparisonResult, setComparisonResult] = useState<string | null>(null);
-  const [costPerUnit1, setCostPerUnit1] = useState<number | null>(null);
-  const [costPerUnit2, setCostPerUnit2] = useState<number | null>(null);
+  const [comparisonResult, setComparisonResult] = useState<any | null>(null);
+  const [costPerUnit1, setCostPerUnit1] = useState<any | null>(null);
+  const [costPerUnit2, setCostPerUnit2] = useState<any | null>(null);
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,7 +44,7 @@ const Home: React.FC = () => {
     setCostPerUnit2(pricePerUnit2);
   };
 
-  const convertToStandardUnit = (product: any): number => {
+  const convertToStandardUnit = (product: any): any => {
     // Converte para a unidade padrão (grama ou litro)
     let convertedSizeOrWeight = product.sizeOrWeight;
 
@@ -57,7 +57,7 @@ const Home: React.FC = () => {
     return convertedSizeOrWeight;
   };
 
-  const handleUnitChange = (unit: string) => {
+  const handleUnitChange = (unit: any) => {
     setProduct1({ ...product1, unit });
     setProduct2({ ...product2, unit });
   };
@@ -73,18 +73,15 @@ const Home: React.FC = () => {
           <div className="mb-6">
             <h2 className="font-bold text-xl">Produto 1</h2>
             <div>
-              <label htmlFor="phone-number" className="block text-sm font-medium leading-6 text-gray-900">
+              <label htmlFor="dimension-value" className="block text-sm font-medium leading-6 text-gray-900">
                 Tamanho / Dimensões / Peso
               </label>
               <div className="relative mt-2 rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 flex items-center">
-                  <label htmlFor="country" className="sr-only">
-                    Country
-                  </label>
                   <select
-                    id="country"
-                    name="country"
-                    autoComplete="country"
+                    id="dimension"
+                    name="dimension"
+                    autoComplete="dimension"
                     className="h-full rounded-md border-0 bg-transparent py-0 pl-3 pr-7 text-gray-500 sm:text-sm"
                     value={product1.unit}
                     onChange={(e) => handleUnitChange(e.target.value)}
@@ -97,12 +94,12 @@ const Home: React.FC = () => {
                 </div>
                 <input
                   type="text"
-                  name="phone-number"
-                  id="phone-number"
+                  name="dimension-value"
+                  id="dimension-value"
                   className="block w-full rounded-md border-0 py-1.5 pl-16 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
                   placeholder=""
                   value={product1.sizeOrWeight}
-                  onChange={(e) => setProduct1({ ...product1, sizeOrWeight: parseFloat(e.target.value) })}
+                  onChange={(e) => setProduct1({ ...product1, sizeOrWeight: e.target.value })}
                 />
               </div>
             </div>
@@ -123,7 +120,7 @@ const Home: React.FC = () => {
                   placeholder="0.00"
                   aria-describedby="price-currency"
                   value={product1.price}
-                  onChange={(e) => setProduct1({ ...product1, price: parseFloat(e.target.value) })}
+                  onChange={(e) => setProduct1({ ...product1, price: e.target.value.replaceAll(",",".") })}
                 />
               </div>
             </div>
@@ -132,18 +129,15 @@ const Home: React.FC = () => {
           <div>
             <h2 className="font-bold text-xl">Produto 2</h2>
             <div>
-              <label htmlFor="phone-number" className="block text-sm font-medium leading-6 text-gray-900">
+              <label htmlFor="dimension-value" className="block text-sm font-medium leading-6 text-gray-900">
                 Tamanho / Dimensões / Peso
               </label>
               <div className="relative mt-2 rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 flex items-center">
-                  <label htmlFor="country" className="sr-only">
-                    Country
-                  </label>
                   <select
-                    id="country"
-                    name="country"
-                    autoComplete="country"
+                    id="dimension"
+                    name="dimension"
+                    autoComplete="dimension"
                     className="h-full rounded-md border-0 bg-transparent py-0 pl-3 pr-7 text-gray-500 sm:text-sm"
                     value={product2.unit}
                     onChange={(e) => handleUnitChange(e.target.value)}
@@ -156,12 +150,12 @@ const Home: React.FC = () => {
                 </div>
                 <input
                   type="text"
-                  name="phone-number"
-                  id="phone-number"
+                  name="dimension-value"
+                  id="dimension-value"
                   className="block w-full rounded-md border-0 py-1.5 pl-16 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
                   placeholder=""
                   value={product2.sizeOrWeight}
-                  onChange={(e) => setProduct2({ ...product2, sizeOrWeight: parseFloat(e.target.value) })}
+                  onChange={(e) => setProduct2({ ...product2, sizeOrWeight: e.target.value })}
                 />
               </div>
             </div>
@@ -182,7 +176,7 @@ const Home: React.FC = () => {
                   placeholder="0.00"
                   aria-describedby="price-currency"
                   value={product2.price}
-                  onChange={(e) => setProduct2({ ...product2, price: parseFloat(e.target.value) })}
+                  onChange={(e) => setProduct2({ ...product2, price: e.target.value.replaceAll(",",".") })}
                 />
               </div>
             </div>
