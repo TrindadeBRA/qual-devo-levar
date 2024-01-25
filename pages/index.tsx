@@ -30,27 +30,14 @@ const Home: React.FC = () => {
     const pricePerUnit1 = product1.price / convertedSizeOrWeight1;
     const pricePerUnit2 = product2.price / convertedSizeOrWeight2;
 
-    // Comparativo de preços Logs
-    if (pricePerUnit1 < pricePerUnit2) {
-      console.log(`${product1.unit} de ${product1.name} é mais barato por unidade.`);
-    } else if (pricePerUnit1 > pricePerUnit2) {
-      console.log(`${product2.unit} de ${product2.name} é mais barato por unidade.`);
-    } else {
-      console.log('Ambos os produtos têm o mesmo preço por unidade.');
-    }
-
     // Comparativo de preços
     if (pricePerUnit1 < pricePerUnit2) {
-      setComparisonResult(`${product1.unit} de ${product1.name} é mais barato por unidade.`);
+      setComparisonResult(`${product1.name} é mais barato por unidade.`);
     } else if (pricePerUnit1 > pricePerUnit2) {
-      setComparisonResult(`${product2.unit} de ${product2.name} é mais barato por unidade.`);
+      setComparisonResult(`${product2.name} é mais barato por unidade.`);
     } else {
       setComparisonResult('Ambos os produtos têm o mesmo preço por unidade.');
     }
-
-    // Logs de custo por unidade
-    console.log(`Custo por unidade de ${product1.name}: R$${pricePerUnit1.toFixed(3)}`);
-    console.log(`Custo por unidade de ${product2.name}: R$${pricePerUnit2.toFixed(3)}`);
 
     // Atualizando informações de custo por unidade
     setCostPerUnit1(pricePerUnit1);
@@ -209,6 +196,8 @@ const Home: React.FC = () => {
           </button>
         </form>
 
+      {comparisonResult && (
+
         <div className="bg-gray-300 p-4 mt-6 rounded-md shadow-md">
           {/* Resultado da comparação */}
           {comparisonResult && (
@@ -220,11 +209,13 @@ const Home: React.FC = () => {
           {/* Custo por unidade */}
           {costPerUnit1 !== null && costPerUnit2 !== null && (
             <div className="mt-4 text-center">
-              <p>{`Custo por unidade de ${product1.name}: R$${costPerUnit1.toFixed(3)}`}</p>
-              <p>{`Custo por unidade de ${product2.name}: R$${costPerUnit2.toFixed(3)}`}</p>
+              <p>{`Custo por ${product1.unit} do ${product1.name}: R$${costPerUnit1.toFixed(3)}`}</p>
+              <p>{`Custo por ${product1.unit} do ${product2.name}: R$${costPerUnit2.toFixed(3)}`}</p>
             </div>
           )}
         </div>
+
+      )}
 
 
       </div>
